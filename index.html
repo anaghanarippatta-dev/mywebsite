@@ -74,42 +74,32 @@
             }
         }
         .cd {
-    width: 120px;
+            .cd-wrapper {
+    display: flex;
+    justify-content: center;
     margin-top: 20px;
+
+    animation: float 3s ease-in-out infinite;
+}
+
+.cd {
+    width: 120px;
     border-radius: 50%;
     cursor: pointer;
 
-    animation: 
-        spin 6s linear infinite,
-        pulse 1.5s ease-in-out infinite;
+    animation: spin 8s linear infinite;
 }
 
-/* spinning */
+/* smooth spin */
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
-/* glowing pulse */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 10px rgba(0,255,200,0.3);
-        transform: scale(1);
-    }
-    50% {
-        box-shadow: 0 0 30px rgba(0,255,200,0.8);
-        transform: scale(1.08);
-    }
-    100% {
-        box-shadow: 0 0 10px rgba(0,255,200,0.3);
-        transform: scale(1);
-    }
-}
-
-/* click press */
-.cd:active {
-    transform: scale(0.95);
-}
+/* gentle floating */
+@keyframes float {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-}
     </style>
 </head>
 
@@ -120,7 +110,7 @@
 <div class="card">
     <p>Even though we're miles apart...</p>
 
-    <<a href="YOUR_LINK" target="_blank">
+    <a href="YOUR_LINK" target="_blank">
     <img src="cd.png" class="cd">
 </a>
 
