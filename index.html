@@ -9,98 +9,103 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Playfair+Display&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            margin: 0;
-            text-align: center;
-            font-family: 'Poppins', sans-serif;
-            background: #0f2027;
-            color: #e0f7f1;
-            animation: fadeIn 2s ease-in;
+        <style>
+body {
+    margin: 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    background: #0f2027;
+    color: #e0f7f1;
+    animation: fadeIn 2s ease-in;
 
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 34px;
-            color: #00c9a7;
-            text-shadow: 0 0 20px rgba(0, 201, 167, 0.7);
-            margin-bottom: 10px;
-        }
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    color: #00c9a7;
+    text-shadow: 0 0 20px rgba(0, 201, 167, 0.7);
+    margin-bottom: 10px;
+}
 
-        .card {
-            background: rgba(255,255,255,0.08);
-            padding: 20px;
-            border-radius: 20px;
-            max-width: 400px;
-            width: 90%;
-            backdrop-filter: blur(12px);
-        }
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 90%;
+    backdrop-filter: blur(12px);
+}
 
-        iframe {
-            margin-top: 10px;
-        }
-
-        button {
-            margin-top: 15px;
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: none;
-            background: #00c9a7;
-            color: black;
-            cursor: pointer;
-        }
-
-        /* MOBILE FIX */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 28px;
-            }
-        }
-
-        /* DESKTOP */
-        @media (min-width: 768px) {
-            h1 {
-                font-size: 56px;
-            }
-        }
-        .cd {
-            .cd-wrapper {
+/* CD WRAPPER (centering + floating) */
+.cd-wrapper {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
     margin-top: 20px;
 
     animation: float 3s ease-in-out infinite;
 }
 
+/* CD IMAGE */
 .cd {
     width: 120px;
+    max-width: 60vw;
+    height: auto;
     border-radius: 50%;
     cursor: pointer;
 
     animation: spin 8s linear infinite;
 }
 
-/* smooth spin */
+/* spin animation */
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
-/* gentle floating */
+/* floating animation */
 @keyframes float {
     0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-}
-    </style>
+    50%  { transform: translateY(-8px); }
+    100% { transform: translateY(0px); }
+}
+
+/* click effect */
+.cd:active {
+    transform: scale(0.95);
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 28px;
+    }
+
+    .cd {
+        width: 140px;
+    }
+}
+
+/* DESKTOP */
+@media (min-width: 768px) {
+    h1 {
+        font-size: 56px;
+    }
+}
+</style>
 </head>
 
 <body>
