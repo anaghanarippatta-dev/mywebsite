@@ -40,6 +40,21 @@ h1 {
     h1 {
         font-size: 60px;
     }
+    @media (max-width: 768px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+    }
+}
+@media (max-width: 768px) {
+    .card {
+        margin: 0 auto;
+    }
+}
 }
 .card {
     background: rgba(255,255,255,0.05);
