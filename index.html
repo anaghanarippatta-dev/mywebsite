@@ -67,64 +67,23 @@
     0%, 100% { opacity: var(--min-op, 0.1); }
     50%       { opacity: var(--max-op, 0.8); }
   }
- /* 🌠 Shooting star */
- .shooting-star {
-  position: absolute;
-  width: 1.5px;
-  height: 1.5px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-  filter: blur(0.5px);
-}
-
-.shooting-star::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -140px;
-  width: 140px;
-  height: 1.5px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255,255,255,0.25),
-    rgba(255,255,255,0.6)
-  );
-  transform: translateY(-50%);
- }
-
- @keyframes shootingStarAnim {
-  0% {
-    transform: translate3d(0, 0, 0);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translate3d(400px, 200px, 0);
-    opacity: 0;
-  }
- }
- } 
+  
  /* ✨ Constellation lines */
-.constellation-line {
+ /* ✨ Constellation lines */
+ .constellation-line {
   position: absolute;
   height: 1px;
   background: rgba(200, 255, 212, 0.15);
   transform-origin: left center;
   pointer-events: none;
-.constellation-line {
   opacity: 0.15;
-}
+ }
 
-@media (max-width: 500px) {
+ @media (max-width: 500px) {
   .constellation-line {
     opacity: 0.08;
   }
-}
+ }
  }
   h1 {
     font-family: 'Italiana', serif;
@@ -516,7 +475,7 @@
   }
  // ✨ CREATE CONSTELLATIONS
  function createConstellations() {
-  const stars = document.querySelectorAll('.star');
+   const stars = document.querySelectorAll('.star');
 
   stars.forEach((starA, i) => {
     const rectA = starA.getBoundingClientRect();
@@ -533,10 +492,44 @@
       // Only connect close stars
       const isMobile = window.innerWidth < 500;
       const maxDistance = isMobile ? 70 : 120;
-      let connections = 0;
-      if (distance < maxDistance && connections < 2) {
-        connections++;
-              if (distance < maxDistance) {
+ function createConstellations() {
+  const stars = document.querySelectorAll('.star');
+
+  stars.forEach((starA, i) => {
+    const rectA = starA.getBoundingClientRect();
+    let connections = 0; // ✅ per star
+
+    stars.forEach((starB, j) => {
+      if (j <= i) return;
+      if (connections >= 2) return;
+
+      const rectB = starB.getBoundingClientRect();
+
+      const dx = rectB.left - rectA.left;
+      const dy = rectB.top - rectA.top;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      const isMobile = window.innerWidth < 500;
+      const maxDistance = isMobile ? 70 : 120;
+
+      if (distance < maxDistance) {
+        const line = document.createElement('div');
+        line.className = 'constellation-line';
+
+        line.style.width = distance + 'px';
+        line.style.left = rectA.left + 'px';
+        line.style.top = rectA.top + 'px';
+
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        line.style.transform = `rotate(${angle}deg)`;
+
+        document.getElementById('stars').appendChild(line);
+
+        connections++; // ✅ now works
+      }
+    });
+  });
+ }
         const line = document.createElement('div');
         line.className = 'constellation-line';
 
@@ -715,46 +708,7 @@
   poemBox.classList.remove("hidden");
   typeWriter();
  });
- // 🌠 SHOOTING STAR FUNCTION
- function createShootingStar() {
-  const star = document.createElement('div');
-  star.className = 'shooting-star';
-
-  // Random start position (top area)
-  const startX = Math.random() * window.innerWidth * 0.8;
-  const startY = Math.random() * window.innerHeight * 0.3;
-
-  star.style.left = startX + 'px';
-  star.style.top = startY + 'px';
-
-  // Random angle (diagonal direction)
-  const angle = 20 + Math.random() * 20;
-  star.style.transform = `rotate(${angle}deg)`;
-
-  // Animation
-  star.style.animation = `shootingStarAnim ${1.8 + Math.random()}s ease-out`;
-  document.getElementById('stars').appendChild(star);
-
-  // Remove after animation
-  setTimeout(() => {
-    star.remove();
-  }, 1200);
- }
-
- // 🌠 RANDOM INTERVAL (every few seconds)
- let lastShootTime = 0;
-
- setInterval(() => {
-  const now = Date.now();
-
-  // Only allow one every 6–12 seconds
-  if (now - lastShootTime > 6000 + Math.random() * 6000) {
-    if (Math.random() < 0.6) {
-      createShootingStar();
-      lastShootTime = now;
-    }
-  }
- }, 2000);
+ 
 </script>
 </body>
 </html>
