@@ -316,6 +316,42 @@
     .cd-disc { width: 110px; height: 110px; }
     .knob-wrap { width: 80px; height: 80px; }
   }
+  .envelope {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 2rem;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+
+.envelope.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.poem {
+  margin-top: 2rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: rgba(200, 255, 212, 0.8);
+  text-align: center;
+}
+
+#cursor {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.hidden {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -392,7 +428,15 @@
     </svg>
     Open Playlist
   </a>
+<!-- Envelope -->
+<div id="envelope" class="envelope hidden">
+  ✉️
+  <p>one more thing…</p>
+</div>
 
+<!-- Poem -->
+<div id="poem" class="poem hidden">
+  <p id="poemText"></p><span id="cursor">|</span>
 </div>
 
 <script>
@@ -419,7 +463,9 @@
   const audio      = document.getElementById('audio');
   const statusText = document.getElementById('statusText');
   const audioBars  = document.getElementById('audioBars');
-
+  const envelope = document.getElementById("envelope");
+  const poemBox = document.getElementById("poem");
+  const poemTextEl = document.getElementById("poemText");
   // ── STATE ───────────────────────────────────────────────────
   let isDragging = false;
   let knobAngle  = 0;
@@ -481,6 +527,10 @@
     if (isPlaying) return;
     isPlaying = true;
     audio.play().catch(() => {});
+    setTimeout(() => {
+  envelope.classList.remove("hidden");
+  envelope.classList.add("show");
+}, 2000);
     statusText.textContent = 'Playing 💚';
     statusText.classList.add('playing');
     audioBars.classList.add('playing');
@@ -517,6 +567,41 @@
   }, { passive: true });
 
   window.addEventListener('touchend', stopDrag);
+  //- poem text--
+  const poemText = `i didn’t expect this...
+  not like this, not with you
+
+  but somewhere between
+  late nights and small conversations
+
+  you became important
+
+  and i’m really glad it’s you.`;
+
+ let i = 0;
+
+ function typeWriter() {
+  if (i < poemText.length) {
+    poemTextEl.innerHTML += poemText.charAt(i);
+    i++;
+
+    let speed = 40;
+
+    if (poemText.charAt(i) === ".") speed = 300;
+    if (poemText.charAt(i) === "\n") speed = 200;
+
+    setTimeout(typeWriter, speed);
+  } else {
+    setTimeout(() => {
+      poemTextEl.innerHTML += "\n\nhappy birthday.";
+    }, 800);
+  }
+ }
+ envelope.addEventListener("click", () => {
+  envelope.style.display = "none";
+  poemBox.classList.remove("hidden");
+  typeWriter();
+ });
 </script>
 </body>
 </html>
