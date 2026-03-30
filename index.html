@@ -1,126 +1,522 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Happy Birthday!</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 💚</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Italiana&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Playfair+Display&display=swap" rel="stylesheet">
-
-    <style>
-        <style>
-body {
-    margin: 0;
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    background: #0f2027;
-    color: #e0f7f1;
-    animation: fadeIn 2s ease-in;
-
+  body {
     min-height: 100vh;
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a12 100%);
+    color: #c8ffd4;
+    font-family: 'Space Mono', monospace;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 34px;
-    color: #00c9a7;
-    text-shadow: 0 0 20px rgba(0, 201, 167, 0.7);
-    margin-bottom: 10px;
-}
-
-/* CARD */
-.card {
-    background: rgba(255,255,255,0.08);
-    padding: 20px;
-    border-radius: 20px;
-    max-width: 400px;
-    width: 90%;
-    backdrop-filter: blur(12px);
-}
-
-/* CD WRAPPER (centering + floating) */
-.cd-wrapper {
-    display: flex;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 20px;
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+    position: relative;
+  }
 
-    animation: float 3s ease-in-out infinite;
-}
+  /* Grain overlay — subtle film texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 100;
+  }
 
-/* CD IMAGE */
-.cd {
-    width: 120px;
-    max-width: 60vw;
-    height: auto;
+  /* Retro CRT scanlines */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 99;
+    opacity: 0.4;
+  }
+
+  /* Stars container */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    background: white;
     border-radius: 50%;
+    animation: twinkle var(--dur, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: var(--min-op, 0.1); }
+    50%       { opacity: var(--max-op, 0.8); }
+  }
+
+  h1 {
+    font-family: 'Italiana', serif;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    color: #00e5a0;
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 0 40px rgba(0, 229, 160, 0.3), 0 0 80px rgba(0, 229, 160, 0.1);
+  }
+
+  .subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: rgba(200, 255, 212, 0.4);
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Frosted glass card */
+  .card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 229, 160, 0.12);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  /* CD + Knob side by side */
+  .stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  /* CD */
+  .cd-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cd-disc {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 229, 160, 0.2);
+    position: relative;
+    will-change: transform;
+    overflow: hidden;
+  }
+
+  .cd-disc img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* CD center hole */
+  .cd-disc::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    background: #0a0a12;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 229, 160, 0.3);
+    z-index: 2;
+  }
+
+  .cd-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: rgba(200, 255, 212, 0.35);
+    text-transform: uppercase;
+  }
+
+  /* Knob / Dial */
+  .knob-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .knob-wrap {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #2a2a3e, #0f0f1a);
+    border: 2px solid rgba(0, 229, 160, 0.2);
+    position: relative;
+    cursor: grab;
+    box-shadow:
+      0 0 0 6px rgba(0, 229, 160, 0.04),
+      0 0 0 12px rgba(0, 229, 160, 0.02),
+      inset 0 2px 4px rgba(255,255,255,0.05),
+      inset 0 -2px 4px rgba(0,0,0,0.4);
+    transition: box-shadow 0.2s;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .knob-wrap.dragging {
+    cursor: grabbing;
+    box-shadow:
+      0 0 0 6px rgba(0, 229, 160, 0.1),
+      0 0 0 14px rgba(0, 229, 160, 0.05),
+      inset 0 2px 4px rgba(255,255,255,0.05),
+      inset 0 -2px 4px rgba(0,0,0,0.4);
+  }
+
+  /* The white dot indicator on the knob */
+  .knob-marker {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00e5a0;
+    box-shadow: 0 0 6px rgba(0, 229, 160, 0.8);
+  }
+
+  .knob-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: rgba(200, 255, 212, 0.35);
+    text-transform: uppercase;
+  }
+
+  /* Status text */
+  .status {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(200, 255, 212, 0.3);
+    transition: color 0.4s;
+  }
+  .status.playing {
+    color: #00e5a0;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+  }
+
+  /* Message text */
+  .message {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: rgba(200, 255, 212, 0.55);
+    text-align: center;
+    max-width: 320px;
+  }
+  .message em {
+    color: rgba(200, 255, 212, 0.85);
+    font-style: normal;
+  }
+
+  /* Spotify button */
+  .spotify-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 50px;
+    border: 1px solid rgba(0, 229, 160, 0.35);
+    background: transparent;
+    color: #00e5a0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
     cursor: pointer;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+  }
+  .spotify-btn:hover {
+    background: rgba(0, 229, 160, 0.1);
+    border-color: rgba(0, 229, 160, 0.6);
+    transform: translateY(-2px);
+  }
+  .spotify-btn:active {
+    transform: translateY(0);
+  }
 
-    animation: spin 8s linear infinite;
-}
+  .spotify-icon {
+    width: 16px;
+    height: 16px;
+    fill: #00e5a0;
+    flex-shrink: 0;
+  }
 
-/* spin animation */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
+  /* Animated waveform bars */
+  .audio-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 20px;
+  }
+  .bar {
+    width: 3px;
+    background: #00e5a0;
+    border-radius: 2px;
+    opacity: 0.2;
+    transition: height 0.1s, opacity 0.3s;
+    min-height: 3px;
+    height: 3px;
+  }
+  .audio-bars.playing .bar {
+    opacity: 0.8;
+    animation: barBounce var(--bar-dur, 0.6s) ease-in-out infinite alternate;
+    animation-delay: var(--bar-delay, 0s);
+  }
+  @keyframes barBounce {
+    from { height: 4px; }
+    to   { height: 18px; }
+  }
 
-/* floating animation */
-@keyframes float {
-    0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-8px); }
-    100% { transform: translateY(0px); }
-}
-
-/* click effect */
-.cd:active {
-    transform: scale(0.95);
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 28px;
-    }
-
-    .cd {
-        width: 140px;
-    }
-}
-
-/* DESKTOP */
-@media (min-width: 768px) {
-    h1 {
-        font-size: 56px;
-    }
-}
+  @media (max-width: 400px) {
+    .stage { gap: 1.5rem; }
+    .cd-disc { width: 110px; height: 110px; }
+    .knob-wrap { width: 80px; height: 80px; }
+  }
 </style>
 </head>
-
 <body>
 
-<h1>Happy Birthday 💚</h1>
+<!-- Stars background (generated by JS) -->
+<div class="stars" id="stars"></div>
+
+<!-- Retro scanline overlay -->
+<div class="scanlines"></div>
+
+<!--
+  AUDIO ELEMENT
+  ─────────────
+  Replace "your-voice.mp3" with the filename of your voice recording.
+  Make sure the .mp3 file is in the SAME FOLDER as this index.html.
+  loop = restarts from beginning when it ends.
+-->
+<audio id="audio" src="your-voice.mp3" preload="auto" loop></audio>
+
+<h1>Happy Birthday</h1>
+<p class="subtitle">for you, always 💚</p>
 
 <div class="card">
-    <p>Even though we're miles apart...</p>
 
-    <a href="YOUR_LINK" target="_blank">
-    <img src="cd.png" class="cd">
-</a>
+  <!-- Waveform bars + status text -->
+  <div style="display:flex; align-items:center; gap:1rem;">
+    <div class="audio-bars" id="audioBars">
+      <div class="bar" style="--bar-dur:0.5s; --bar-delay:0s;"></div>
+      <div class="bar" style="--bar-dur:0.7s; --bar-delay:0.1s;"></div>
+      <div class="bar" style="--bar-dur:0.4s; --bar-delay:0.2s;"></div>
+      <div class="bar" style="--bar-dur:0.6s; --bar-delay:0.05s;"></div>
+      <div class="bar" style="--bar-dur:0.8s; --bar-delay:0.15s;"></div>
+    </div>
+    <p class="status" id="statusText">Turn the knob to play</p>
+  </div>
 
-<p style="opacity:0.7; margin-top:10px;">Tap to play 💚</p>
+  <!-- CD and Knob -->
+  <div class="stage">
+
+    <!-- CD Disc
+         Replace "cd.png" with your image filename (e.g. "cover.jpg") -->
+    <div class="cd-container">
+      <div class="cd-disc" id="cdDisc">
+        <img src="cd.png" alt="CD">
+      </div>
+      <p class="cd-label">Your Mix</p>
+    </div>
+
+    <!-- Rotatable Knob -->
+    <div class="knob-container">
+      <div class="knob-wrap" id="knob">
+        <div class="knob-marker"></div>
+      </div>
+      <p class="knob-label">Dial</p>
+    </div>
+
+  </div>
+
+  <!-- Personal message — edit this to say whatever you want! -->
+  <p class="message">
+    Even though we're <em>miles apart</em>, every song in here is a little piece of me
+    reaching across the distance. Turn the dial — I made this for you. 💚
+  </p>
+
+  <!--
+    SPOTIFY BUTTON
+    ──────────────
+    Replace YOUR_SPOTIFY_LINK with your actual playlist URL.
+    Example: https://open.spotify.com/playlist/abc123...
+  -->
+  <a href="YOUR_SPOTIFY_LINK" target="_blank" rel="noopener noreferrer" class="spotify-btn">
+    <svg class="spotify-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+    </svg>
+    Open Playlist
+  </a>
+
 </div>
 
+<script>
+  // ── GENERATE STARS ──────────────────────────────────────────
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2 + 1;
+    star.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%; left:${Math.random()*100}%;
+      --dur:${2+Math.random()*4}s;
+      --delay:${Math.random()*4}s;
+      --min-op:${0.05+Math.random()*0.1};
+      --max-op:${0.4+Math.random()*0.5};
+    `;
+    starsContainer.appendChild(star);
+  }
+
+  // ── ELEMENT REFERENCES ──────────────────────────────────────
+  const knob       = document.getElementById('knob');
+  const cdDisc     = document.getElementById('cdDisc');
+  const audio      = document.getElementById('audio');
+  const statusText = document.getElementById('statusText');
+  const audioBars  = document.getElementById('audioBars');
+
+  // ── STATE ───────────────────────────────────────────────────
+  let isDragging = false;
+  let knobAngle  = 0;
+  let cdAngle    = 0;
+  let lastAngle  = null;
+  let stopTimer  = null;
+  let isPlaying  = false;
+
+  // ── CALCULATE ANGLE FROM POINTER TO KNOB CENTER ─────────────
+  function getAngle(clientX, clientY) {
+    const rect = knob.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
+  }
+
+  // ── START DRAG ──────────────────────────────────────────────
+  function startDrag(x, y) {
+    isDragging = true;
+    lastAngle  = getAngle(x, y);
+    knob.classList.add('dragging');
+  }
+
+  // ── HANDLE MOVEMENT ─────────────────────────────────────────
+  function onMove(x, y) {
+    if (!isDragging) return;
+
+    const currentAngle = getAngle(x, y);
+    let delta = currentAngle - lastAngle;
+
+    // Prevent wrap-around jump at ±180°
+    if (delta >  180) delta -= 360;
+    if (delta < -180) delta += 360;
+
+    knobAngle += delta;
+    cdAngle   += delta * 1.5; // CD spins 1.5x faster than the knob
+    lastAngle  = currentAngle;
+
+    knob.style.transform   = `rotate(${knobAngle}deg)`;
+    cdDisc.style.transform = `rotate(${cdAngle}deg)`;
+
+    if (Math.abs(delta) > 0.5) {
+      playAudio();
+      clearTimeout(stopTimer);
+      stopTimer = setTimeout(pauseAudio, 150); // pause 150ms after movement stops
+    }
+  }
+
+  // ── STOP DRAG ───────────────────────────────────────────────
+  function stopDrag() {
+    if (!isDragging) return;
+    isDragging = false;
+    knob.classList.remove('dragging');
+    pauseAudio();
+  }
+
+  // ── PLAY AUDIO ──────────────────────────────────────────────
+  function playAudio() {
+    if (isPlaying) return;
+    isPlaying = true;
+    audio.play().catch(() => {});
+    statusText.textContent = 'Playing 💚';
+    statusText.classList.add('playing');
+    audioBars.classList.add('playing');
+  }
+
+  // ── PAUSE AUDIO ─────────────────────────────────────────────
+  function pauseAudio() {
+    if (!isPlaying) return;
+    isPlaying = false;
+    audio.pause();
+    statusText.textContent = 'Turn the knob to play';
+    statusText.classList.remove('playing');
+    audioBars.classList.remove('playing');
+  }
+
+  // ── MOUSE EVENTS (desktop) ───────────────────────────────────
+  knob.addEventListener('mousedown', e => {
+    e.preventDefault();
+    startDrag(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup', stopDrag);
+
+  // ── TOUCH EVENTS (mobile) ────────────────────────────────────
+  knob.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    startDrag(t.clientX, t.clientY);
+  }, { passive: false });
+
+  window.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    onMove(t.clientX, t.clientY);
+  }, { passive: true });
+
+  window.addEventListener('touchend', stopDrag);
+</script>
 </body>
 </html>
