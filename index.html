@@ -31,8 +31,8 @@ h1 {
 } 
 .card {
     background: rgba(255,255,255,0.05);
-    padding: 25px;
-    margin: 30px auto;
+    padding: 20px;
+    margin: 20px auto;
     border-radius: 20px;
     max-width: 400px;
     backdrop-filter: blur(12px);
@@ -60,15 +60,34 @@ button {
     animation: blink 1s infinite;
 } 
 </style>
+h1 {
+    font-size: 28px;
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 48px;
+    }
+}
 </head>
 <body>
 <div id="intro" class="intro"></div>
 <h1>Happy Birthday</h1>
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 <div class="card">
     <p>something something blah blah blah</p>
     <p id="slideText"></p>
-    <iframe 
-    src="https://open.spotify.com/embed/playlist/6Os49wyvJr3FeG9EVQreFG?si=L7O_6qm9R02-A6jd1E6n_g&pi=lDMbLUbAQDO3c"></iframe>
+    <<iframe 
+src="YOUR_EMBED_LINK"
+width="100%" 
+height="352"
+style="border-radius:12px; border:none;">
+</iframe>
     <button onclick="showMessage('sad')">
         <p id="sad" class="typing"></p>
 
