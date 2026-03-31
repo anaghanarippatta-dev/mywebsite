@@ -8,48 +8,22 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ── PAGE ── */
   body {
     min-height: 100vh;
-    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a12 100%);
+    background: #06080f;
     color: #c8ffd4;
     font-family: 'Space Mono', monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 3rem;
     overflow-x: hidden;
     position: relative;
   }
 
-  /* Grain overlay — subtle film texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.06;
-    pointer-events: none;
-    z-index: 100;
-  }
-
-  /* Retro CRT scanlines */
-  .scanlines {
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.08) 2px,
-      rgba(0, 0, 0, 0.08) 4px
-    );
-    pointer-events: none;
-    z-index: 99;
-    opacity: 0.4;
-  }
-
-  /* Stars container */
+  /* ── STARS ── */
   .stars {
     position: fixed;
     inset: 0;
@@ -64,78 +38,110 @@
     animation-delay: var(--delay, 0s);
   }
   @keyframes twinkle {
-    0%, 100% { opacity: var(--min-op, 0.1); }
-    50%       { opacity: var(--max-op, 0.8); }
+    0%, 100% { opacity: var(--min-op, 0.05); }
+    50%       { opacity: var(--max-op, 0.7); }
   }
 
+  /* ── HEADING ── */
   h1 {
     font-family: 'Italiana', serif;
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-size: clamp(2rem, 7vw, 3.8rem);
     color: #00e5a0;
     letter-spacing: 0.05em;
     text-align: center;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
     position: relative;
     z-index: 1;
-    text-shadow: 0 0 40px rgba(0, 229, 160, 0.3), 0 0 80px rgba(0, 229, 160, 0.1);
+    text-shadow: 0 0 40px rgba(0,229,160,0.35);
   }
-
   .subtitle {
-    font-size: 0.7rem;
-    letter-spacing: 0.3em;
-    color: rgba(200, 255, 212, 0.4);
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    color: rgba(200,255,212,0.3);
     text-transform: uppercase;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
     position: relative;
     z-index: 1;
   }
 
-  /* Frosted glass card */
-  .card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(0, 229, 160, 0.12);
-    border-radius: 24px;
-    padding: 2.5rem 2rem;
-    max-width: 480px;
-    width: 100%;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+  /* ══════════════════════════════════════════
+     THE DEVICE — the main boxy unit from the sketch
+  ══════════════════════════════════════════ */
+  .device {
     position: relative;
     z-index: 1;
+    width: min(480px, 92vw);
+    background: #0d1529;
+    border-radius: 28px;
+    border: 1.5px solid rgba(0,229,160,0.1);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.8),
+      0 30px 80px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      inset 0 -1px 0 rgba(0,0,0,0.5);
+    padding: 2.5rem 2rem 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 2rem;
   }
 
-  /* CD + Knob side by side */
-  .stage {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2.5rem;
-    width: 100%;
-    flex-wrap: wrap;
+  /* Subtle inner glow on the device face */
+  .device::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    background: radial-gradient(ellipse at 50% 30%, rgba(0,229,160,0.04) 0%, transparent 70%);
+    pointer-events: none;
   }
 
-  /* CD */
-  .cd-container {
+  /* ── DEVICE TOP ROW: CD left, Lever right ── */
+  .device-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    gap: 1rem;
+  }
+
+  /* ── CD SECTION ── */
+  .cd-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
+    flex: 1;
+    max-width: 200px;
   }
 
-  .cd-disc {
-    width: 140px;
-    height: 140px;
+  /* The dark recessed bay the CD sits in */
+  .cd-bay {
+    width: 170px;
+    height: 170px;
     border-radius: 50%;
-    border: 2px solid rgba(0, 229, 160, 0.2);
+    background: #060a14;
+    border: 3px solid #1a2035;
+    box-shadow:
+      inset 0 4px 20px rgba(0,0,0,0.8),
+      inset 0 0 0 8px #0a0f1e,
+      0 0 0 1px rgba(0,229,160,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* The CD disc itself */
+  .cd-disc {
+    width: 136px;
+    height: 136px;
+    border-radius: 50%;
     position: relative;
     will-change: transform;
     overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    flex-shrink: 0;
   }
-
   .cd-disc img {
     width: 100%;
     height: 100%;
@@ -143,343 +149,250 @@
     border-radius: 50%;
     display: block;
   }
-
-  /* CD center hole */
+  /* CD placeholder when no image — iridescent shimmer */
+  .cd-disc .cd-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      #8ecfff, #c9a0ff, #ffb3c6, #ffd580, #a0ffcf, #8ecfff
+    );
+    opacity: 0.85;
+  }
+  /* Center hole */
   .cd-disc::after {
     content: '';
     position: absolute;
     top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
-    background: #0a0a12;
+    transform: translate(-50%,-50%);
+    width: 16px; height: 16px;
+    background: #060a14;
     border-radius: 50%;
-    border: 1px solid rgba(0, 229, 160, 0.3);
+    border: 1px solid rgba(255,255,255,0.15);
     z-index: 2;
   }
-
   .cd-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.2em;
-    color: rgba(200, 255, 212, 0.35);
+    color: rgba(200,255,212,0.25);
     text-transform: uppercase;
   }
 
-  /* Knob / Dial */
-  .knob-container {
+  /* ── LEVER / KNOB SECTION ── */
+  /* Matches the sketch: round knob with a stick/arm */
+  .lever-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
+    flex-shrink: 0;
   }
 
-  .knob-wrap {
+  /* Outer track ring */
+  .lever-track {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #2a2a3e, #0f0f1a);
-    border: 2px solid rgba(0, 229, 160, 0.2);
+    background: #070b16;
+    border: 2px solid #1a2035;
+    box-shadow:
+      inset 0 3px 12px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(0,229,160,0.05);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* The knob itself — smaller circle inside the track */
+  .knob-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #1e2540, #0a0e1c);
+    border: 1.5px solid rgba(0,229,160,0.15);
     position: relative;
     cursor: grab;
     box-shadow:
-      0 0 0 6px rgba(0, 229, 160, 0.04),
-      0 0 0 12px rgba(0, 229, 160, 0.02),
-      inset 0 2px 4px rgba(255,255,255,0.05),
-      inset 0 -2px 4px rgba(0,0,0,0.4);
+      0 4px 16px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -2px 4px rgba(0,0,0,0.5);
     transition: box-shadow 0.2s;
     will-change: transform;
     user-select: none;
     -webkit-user-select: none;
   }
-
   .knob-wrap.dragging {
     cursor: grabbing;
     box-shadow:
-      0 0 0 6px rgba(0, 229, 160, 0.1),
-      0 0 0 14px rgba(0, 229, 160, 0.05),
-      inset 0 2px 4px rgba(255,255,255,0.05),
-      inset 0 -2px 4px rgba(0,0,0,0.4);
+      0 4px 24px rgba(0,229,160,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -2px 4px rgba(0,0,0,0.5);
   }
 
-  /* The white dot indicator on the knob */
-  .knob-marker {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #00e5a0;
-    box-shadow: 0 0 6px rgba(0, 229, 160, 0.8);
-  }
-
-  .knob-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: rgba(200, 255, 212, 0.35);
-    text-transform: uppercase;
-  }
-
-  /* Status text */
-  .status {
-    font-size: 0.65rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: rgba(200, 255, 212, 0.3);
-    transition: color 0.4s;
-  }
-  .status.playing {
-    color: #00e5a0;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.5; }
-  }
-
-  /* Message text */
-  .message {
-    font-size: 0.85rem;
-    line-height: 1.8;
-    color: rgba(200, 255, 212, 0.55);
-    text-align: center;
-    max-width: 320px;
-  }
-  .message em {
-    color: rgba(200, 255, 212, 0.85);
-    font-style: normal;
-  }
-
-  /* Spotify button */
-  .spotify-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.75rem 1.75rem;
-    border-radius: 50px;
-    border: 1px solid rgba(0, 229, 160, 0.35);
-    background: transparent;
-    color: #00e5a0;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s, border-color 0.2s;
-  }
-  .spotify-btn:hover {
-    background: rgba(0, 229, 160, 0.1);
-    border-color: rgba(0, 229, 160, 0.6);
-    transform: translateY(-2px);
-  }
-  .spotify-btn:active {
-    transform: translateY(0);
-  }
-
-  .spotify-icon {
-    width: 16px;
-    height: 16px;
-    fill: #00e5a0;
-    flex-shrink: 0;
-  }
-
-  /* Animated waveform bars */
-  .audio-bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 20px;
-  }
-  .bar {
-    width: 3px;
-    background: #00e5a0;
-    border-radius: 2px;
-    opacity: 0.2;
-    transition: height 0.1s, opacity 0.3s;
-    min-height: 3px;
-    height: 3px;
-  }
-  .audio-bars.playing .bar {
-    opacity: 0.8;
-    animation: barBounce var(--bar-dur, 0.6s) ease-in-out infinite alternate;
-    animation-delay: var(--bar-delay, 0s);
-  }
-  @keyframes barBounce {
-    from { height: 4px; }
-    to   { height: 18px; }
-  }
-
-  @media (max-width: 400px) {
-    .stage { gap: 1.5rem; }
-    .cd-disc { width: 110px; height: 110px; }
-    .knob-wrap { width: 80px; height: 80px; }
-  }
-
-  /* ── ENVELOPE AREA ───────────────────────────────────────── */
-  /* Sits below the main card with breathing room */
-  .envelope-area {
-    position: relative;
-    z-index: 2;
-    margin-top: 3rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .envelope-hint {
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: rgba(200, 255, 212, 0.25);
-    animation: hintPulse 2.5s ease-in-out infinite;
-  }
-  @keyframes hintPulse {
-    0%, 100% { opacity: 0.4; }
-    50%       { opacity: 1; }
-  }
-
-  /* The envelope wrapper — holds all envelope layers */
-  .envelope-wrap {
-    position: relative;
-    width: 220px;
-    height: 150px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .envelope-wrap:hover { transform: translateY(-4px) scale(1.02); }
-  .envelope-wrap.opened { cursor: default; transform: none; pointer-events: none; }
-
-  /* ── ENVELOPE BODY (the main rectangle) ── */
-  .env-body {
-    position: absolute;
-    inset: 0;
-    /* Aged parchment colour */
-    background: #e8dcc8;
-    border-radius: 4px 4px 6px 6px;
-    /* Left and right diagonal fold lines drawn with a linear gradient trick */
-    background-image:
-      linear-gradient(135deg, #d4c4a0 0%, transparent 50%),
-      linear-gradient(225deg, #d4c4a0 0%, transparent 50%);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
-    overflow: hidden;
-  }
-
-  /* Paper grain texture on the envelope body */
-  .env-body::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.08;
-    pointer-events: none;
-  }
-
-  /* Bottom triangle fold (V-shape at bottom of envelope) */
-  .env-bottom {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 75px;
-    /* clip-path creates a triangle pointing upward */
-    clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
-    background: #ddd0b0;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  /* Left side triangle fold */
-  .env-left {
-    position: absolute;
-    top: 0; left: 0; bottom: 0;
-    width: 110px;
-    clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
-    background: #ddd0b0;
-    border-right: 1px solid rgba(0,0,0,0.06);
-  }
-
-  /* Right side triangle fold */
-  .env-right {
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 110px;
-    clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
-    background: #ddd0b0;
-    border-left: 1px solid rgba(0,0,0,0.06);
-  }
-
-  /* ── ENVELOPE FLAP (top triangle that opens) ── */
-  .env-flap {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 80px;
-    /* Triangle pointing downward — this is the flap */
-    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
-    background: #e2d4b4;
-    transform-origin: top center;   /* rotates from the top edge */
-    transform: rotateX(0deg);
-    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    z-index: 3;
-    /* perspective makes the 3D flip look realistic */
-    backface-visibility: visible;
-  }
-
-  /* When opened: flap folds backward (negative X rotation = fold back) */
-  .envelope-wrap.opened .env-flap {
-    transform: rotateX(-170deg);
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* ── WAX SEAL ── */
-  .wax-seal {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 36px;
-    height: 36px;
-    background: radial-gradient(circle at 40% 35%, #a83232, #6b1515);
-    border-radius: 50%;
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,100,100,0.3);
-    transition: opacity 0.3s, transform 0.3s;
-    /* Small irregular edge to look like real wax */
-    clip-path: polygon(50% 0%,61% 15%,79% 9%,79% 27%,96% 35%,85% 50%,96% 65%,79% 73%,79% 91%,61% 85%,50% 100%,39% 85%,21% 91%,21% 73%,4% 65%,15% 50%,4% 35%,21% 27%,21% 9%,39% 15%);
-  }
-  /* Seal cracks and fades when opened */
-  .envelope-wrap.opened .wax-seal {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.6) rotate(20deg);
-    transition: opacity 0.3s 0.2s, transform 0.3s 0.2s;
-  }
-
-  /* ── LETTER that peeks out of the envelope ── */
-  .env-letter-peek {
+  /* The arm/stick extending from the knob — like in the sketch */
+  .knob-arm {
     position: absolute;
     bottom: 8px;
     left: 50%;
-    transform: translateX(-50%) translateY(0px);
-    width: 180px;
-    height: 60px;
-    background: #f5edd8;
+    transform-origin: bottom center;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 26px;
+    background: linear-gradient(to top, #8a6a3a, #c4924e);
     border-radius: 2px;
-    z-index: 1;
-    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
-  }
-  /* Letter rises up out of envelope when opened */
-  .envelope-wrap.opened .env-letter-peek {
-    transform: translateX(-50%) translateY(-30px);
+    box-shadow: 0 0 6px rgba(200,150,80,0.3);
   }
 
-  /* ── FULL LETTER OVERLAY ── 
-    This is the large letter that appears centred on screen.
-    It starts invisible and transitions to visible.
-  */
+  /* Green dot at tip of arm */
+  .knob-arm::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #00e5a0;
+    box-shadow: 0 0 8px rgba(0,229,160,0.8);
+  }
+
+  .lever-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: rgba(200,255,212,0.25);
+    text-transform: uppercase;
+  }
+
+  /* ── DIVIDER ── */
+  .device-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(0,229,160,0.1), transparent);
+  }
+
+  /* ── BOTTOM BUTTON ROW ── 
+     Three pill buttons: mail | waveform(spotify) | play/pause
+     Matches the sketch exactly.
+  ── */
+  .device-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0 0.25rem;
+  }
+
+  /* Shared pill button style — cream/off-white like in the sketch */
+  .pill-btn {
+    flex: 1;
+    height: 52px;
+    border-radius: 50px;
+    background: #e8e0cc;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    color: #1a1208;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(0,0,0,0.1);
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    position: relative;
+    overflow: hidden;
+  }
+  .pill-btn:hover {
+    background: #f0e8d4;
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 20px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.7),
+      inset 0 -1px 0 rgba(0,0,0,0.1);
+  }
+  .pill-btn:active {
+    transform: translateY(0px);
+    background: #d8d0bc;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.4),
+      inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Active state for play button — glows green */
+  .pill-btn.active {
+    background: #d4f0e0;
+    box-shadow:
+      0 4px 16px rgba(0,229,160,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.7),
+      inset 0 -1px 0 rgba(0,0,0,0.08);
+  }
+
+  /* SVG icons inside buttons */
+  .pill-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* Waveform icon — animated bars when "playing" */
+  .waveform-icon {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 18px;
+  }
+  .wv {
+    width: 3px;
+    background: #1a1208;
+    border-radius: 2px;
+    height: 6px;
+  }
+  /* Static waveform heights to look like a waveform */
+  .wv:nth-child(1)  { height: 8px; }
+  .wv:nth-child(2)  { height: 14px; }
+  .wv:nth-child(3)  { height: 10px; }
+  .wv:nth-child(4)  { height: 18px; }
+  .wv:nth-child(5)  { height: 7px; }
+  .wv:nth-child(6)  { height: 13px; }
+  .wv:nth-child(7)  { height: 5px; }
+  .wv:nth-child(8)  { height: 11px; }
+  .wv:nth-child(9)  { height: 15px; }
+  .wv:nth-child(10) { height: 8px; }
+
+  /* ── STATUS BAR ── small text above the buttons */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(200,255,212,0.2);
+    transition: background 0.3s;
+  }
+  .status-dot.on { background: #00e5a0; box-shadow: 0 0 6px rgba(0,229,160,0.7); }
+  .status-text {
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(200,255,212,0.3);
+    transition: color 0.3s;
+  }
+  .status-text.playing { color: #00e5a0; }
+  .status-text.reverse { color: #ffb347; }
+  .status-dot.reverse  { background: #ffb347; box-shadow: 0 0 6px rgba(255,180,70,0.7); }
+
+  /* ══════════════════════════════════════════
+     LETTER OVERLAY (envelope opens to this)
+  ══════════════════════════════════════════ */
   .letter-overlay {
     position: fixed;
     inset: 0;
@@ -488,73 +401,67 @@
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    /* Semi-transparent dark backdrop */
-    background: rgba(5, 5, 15, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    /* Hidden by default */
+    background: rgba(3, 5, 12, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.5s ease 0.8s; /* delays until envelope animation finishes */
+    transition: opacity 0.4s ease;
   }
-  /* When active, fade in and allow clicks */
   .letter-overlay.visible {
     opacity: 1;
     pointer-events: all;
   }
 
-  /* The actual letter paper */
+  /* Letter paper — aged parchment */
   .letter-paper {
     position: relative;
     background: #f5edd8;
-    /* Parchment-style aged paper */
     background-image:
       repeating-linear-gradient(
         transparent,
         transparent 27px,
-        rgba(180, 160, 100, 0.25) 27px,
-        rgba(180, 160, 100, 0.25) 28px
+        rgba(180,160,100,0.22) 27px,
+        rgba(180,160,100,0.22) 28px
       );
-    border-radius: 3px;
+    border-radius: 4px;
     max-width: 500px;
     width: 100%;
     padding: 3rem 2.5rem 2.5rem;
     box-shadow:
-      0 20px 60px rgba(0,0,0,0.6),
-      0 0 0 1px rgba(180,160,100,0.3),
-      inset 0 0 80px rgba(180,140,60,0.08);
-    /* Starts scaled down — animates to full size */
-    transform: scale(0.85) translateY(30px);
-    transition: transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) 0.9s;
-    max-height: 85vh;
+      0 24px 70px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(180,160,100,0.25),
+      inset 0 0 60px rgba(180,140,60,0.06);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+    max-height: 88vh;
     overflow-y: auto;
   }
   .letter-overlay.visible .letter-paper {
     transform: scale(1) translateY(0);
   }
 
-  /* Aged paper edges */
+  /* Paper grain */
   .letter-paper::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 3px;
+    border-radius: 4px;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.07;
+    opacity: 0.06;
     pointer-events: none;
   }
 
-  /* Red left margin line (classic letter paper look) */
+  /* Red margin line */
   .letter-paper::after {
     content: '';
     position: absolute;
     top: 0; bottom: 0;
     left: 2.2rem;
     width: 1px;
-    background: rgba(180, 80, 80, 0.25);
+    background: rgba(180,80,80,0.2);
   }
 
-  /* Letter greeting "Dear ..." */
   .letter-greeting {
     font-family: 'IM Fell English', serif;
     font-style: italic;
@@ -562,38 +469,33 @@
     color: #4a3520;
     margin-bottom: 1.5rem;
     opacity: 0;
-    transition: opacity 0.4s ease 1.2s;
+    transition: opacity 0.4s ease 0.3s;
+    position: relative;
+    z-index: 1;
   }
   .letter-overlay.visible .letter-greeting { opacity: 1; }
 
-  /* The poem text area */
   .letter-poem {
-    font-family: 'Special Elite', cursive; /* typewriter font */
+    font-family: 'Special Elite', cursive;
     font-size: 0.88rem;
     line-height: 2;
     color: #3a2a14;
-    white-space: pre-wrap; /* preserves line breaks */
+    white-space: pre-wrap;
     min-height: 200px;
     position: relative;
     z-index: 1;
   }
-
-  /* Blinking cursor that appears at the end of typed text */
   .letter-poem::after {
     content: '|';
     animation: blink 0.7s step-end infinite;
     color: #4a3520;
-    font-weight: bold;
   }
-  /* Hide cursor when typing is done */
   .letter-poem.done::after { display: none; }
-
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0; }
   }
 
-  /* Letter sign-off */
   .letter-signoff {
     font-family: 'IM Fell English', serif;
     font-style: italic;
@@ -603,384 +505,466 @@
     text-align: right;
     opacity: 0;
     transition: opacity 0.8s ease;
+    position: relative;
+    z-index: 1;
   }
 
-  /* Close button (×) in the top-right corner of the letter */
   .letter-close {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    width: 28px;
-    height: 28px;
-    background: rgba(74, 53, 32, 0.1);
-    border: 1px solid rgba(74, 53, 32, 0.2);
+    width: 28px; height: 28px;
+    background: rgba(74,53,32,0.1);
+    border: 1px solid rgba(74,53,32,0.2);
     border-radius: 50%;
     color: #4a3520;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.2s;
     font-family: sans-serif;
-    z-index: 2;
+    z-index: 3;
   }
-  .letter-close:hover { background: rgba(74, 53, 32, 0.2); }
+  .letter-close:hover { background: rgba(74,53,32,0.2); }
 
-  /* Decorative postmark stamp in the corner of the envelope */
+  /* Postmark on the letter paper top-right */
   .postmark {
     position: absolute;
-    top: 10px;
-    right: 12px;
-    width: 38px;
-    height: 38px;
-    border: 2px solid rgba(100, 80, 50, 0.4);
+    top: 1rem; right: 3rem;
+    width: 44px; height: 44px;
+    border: 2px solid rgba(100,80,50,0.3);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Special Elite', cursive;
-    font-size: 5px;
-    color: rgba(100, 80, 50, 0.5);
+    font-size: 5.5px;
+    color: rgba(100,80,50,0.45);
     text-align: center;
-    line-height: 1.3;
+    line-height: 1.4;
     z-index: 2;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
+    transform: rotate(-8deg);
+  }
+
+  @media (max-width: 440px) {
+    .device { padding: 1.8rem 1.2rem 1.5rem; }
+    .cd-bay { width: 140px; height: 140px; }
+    .cd-disc { width: 112px; height: 112px; }
+    .lever-track { width: 84px; height: 84px; }
+    .knob-wrap { width: 60px; height: 60px; }
+    .device-buttons { gap: 0.5rem; }
+    .pill-btn { height: 46px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Stars background (generated by JS) -->
+<!-- ── STARS ── -->
 <div class="stars" id="stars"></div>
 
-<!-- Retro scanline overlay -->
-<div class="scanlines"></div>
-
-<!--
-  AUDIO ELEMENT
-  ─────────────
-  Replace "your-voice.mp3" with the filename of your voice recording.
-  Make sure the .mp3 file is in the SAME FOLDER as this index.html.
-  loop = restarts from beginning when it ends.
+<!-- ── AUDIO ──
+  Replace filenames with your actual files.
+  Both must be in the same folder as index.html.
 -->
-<audio id="audio" src="your-voice.mp3" preload="auto" loop></audio>
+<audio id="audioFwd" src="your-voice.mp3" preload="auto"></audio>
+<audio id="audioRev" src="your-voice-reverse.mp3" preload="auto"></audio>
 
+<!-- ── HEADING ── -->
 <h1>Happy Birthday</h1>
 <p class="subtitle">for you, always 💚</p>
 
-<div class="card">
+<!-- ══════════════════════════════════
+     THE DEVICE
+══════════════════════════════════ -->
+<div class="device">
 
-  <!-- Waveform bars + status text -->
-  <div style="display:flex; align-items:center; gap:1rem;">
-    <div class="audio-bars" id="audioBars">
-      <div class="bar" style="--bar-dur:0.5s; --bar-delay:0s;"></div>
-      <div class="bar" style="--bar-dur:0.7s; --bar-delay:0.1s;"></div>
-      <div class="bar" style="--bar-dur:0.4s; --bar-delay:0.2s;"></div>
-      <div class="bar" style="--bar-dur:0.6s; --bar-delay:0.05s;"></div>
-      <div class="bar" style="--bar-dur:0.8s; --bar-delay:0.15s;"></div>
-    </div>
-    <p class="status" id="statusText">Turn the knob to play</p>
-  </div>
+  <!-- TOP ROW: CD + Lever -->
+  <div class="device-top">
 
-  <!-- CD and Knob -->
-  <div class="stage">
-
-    <!-- CD Disc
-         Replace "cd.png" with your image filename (e.g. "cover.jpg") -->
-    <div class="cd-container">
-      <div class="cd-disc" id="cdDisc">
-        <img src="cd.png" alt="CD">
+    <!-- CD -->
+    <div class="cd-section">
+      <div class="cd-bay">
+        <div class="cd-disc" id="cdDisc">
+          <!--
+            If you have a CD image, replace the div below with:
+            <img src="your-image.jpg" alt="CD">
+            Otherwise the iridescent placeholder shows.
+          -->
+          <div class="cd-placeholder"></div>
+        </div>
       </div>
-      <p class="cd-label">Your Mix</p>
+      <p class="cd-label">your mix</p>
     </div>
 
-    <!-- Rotatable Knob -->
-    <div class="knob-container">
-      <div class="knob-wrap" id="knob">
-        <div class="knob-marker"></div>
+    <!-- Lever / Knob -->
+    <div class="lever-section">
+      <div class="lever-track">
+        <!--
+          .knob-wrap is the draggable circle.
+          .knob-arm is the brown stick that sticks out — rotates with it.
+        -->
+        <div class="knob-wrap" id="knob">
+          <div class="knob-arm"></div>
+        </div>
       </div>
-      <p class="knob-label">Dial</p>
+      <p class="lever-label">dial</p>
     </div>
 
+  </div><!-- /device-top -->
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <p class="status-text" id="statusText">turn the dial</p>
   </div>
 
-  <!-- Personal message — edit this to say whatever you want! -->
-  <p class="message">
-    Even though we're <em>miles apart</em>, every song in here is a little piece of me
-    reaching across the distance. Turn the dial — I made this for you. 💚
-  </p>
+  <div class="device-divider"></div>
 
-  <!--
-    SPOTIFY BUTTON
-    ──────────────
-    Replace YOUR_SPOTIFY_LINK with your actual playlist URL.
-    Example: https://open.spotify.com/playlist/abc123...
-  -->
-  <a href="YOUR_SPOTIFY_LINK" target="_blank" rel="noopener noreferrer" class="spotify-btn">
-    <svg class="spotify-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-    </svg>
-    Open Playlist
-  </a>
+  <!-- BOTTOM BUTTON ROW -->
+  <div class="device-buttons">
 
-</div>
+    <!-- LEFT: Mail → opens letter -->
+    <button class="pill-btn" id="mailBtn" onclick="openLetter()" title="Open letter">
+      <!-- Envelope icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <polyline points="2,4 12,14 22,4"/>
+      </svg>
+    </button>
 
-<!-- ══════════════════════════════════════════════════
-     ENVELOPE SECTION
-═══════════════════════════════════════════════════ -->
-<div class="envelope-area">
-  <p class="envelope-hint">✦ a letter for you ✦</p>
+    <!-- MIDDLE: Waveform → Spotify link -->
+    <!--
+      Replace YOUR_SPOTIFY_LINK with your actual playlist URL.
+    -->
+    <a href="YOUR_SPOTIFY_LINK" target="_blank" rel="noopener noreferrer" class="pill-btn" title="Open Spotify playlist">
+      <div class="waveform-icon">
+        <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+        <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+        <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+        <div class="wv"></div>
+      </div>
+    </a>
 
-  <div class="envelope-wrap" id="envelope" onclick="openEnvelope()">
-    <div class="env-body"></div>
-    <div class="env-left"></div>
-    <div class="env-right"></div>
-    <div class="env-bottom"></div>
-    <div class="env-letter-peek"></div>
-    <div class="env-flap"></div>
-    <div class="wax-seal">💚</div>
-    <div class="postmark">WITH<br>LOVE<br>✦✦✦<br>2025</div>
-  </div>
-</div>
+    <!-- RIGHT: Play/Pause toggle for voice message -->
+    <button class="pill-btn" id="playBtn" onclick="togglePlay()" title="Play / pause voice message">
+      <!-- Play icon (shown when paused) -->
+      <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor">
+        <polygon points="5,3 19,12 5,21"/>
+      </svg>
+      <!-- Pause icon (shown when playing — hidden by default) -->
+      <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+        <rect x="5" y="3" width="4" height="18" rx="1"/>
+        <rect x="15" y="3" width="4" height="18" rx="1"/>
+      </svg>
+    </button>
 
-<!-- ══════════════════════════════════════════════════
-     FULL LETTER OVERLAY
-     Edit POEM_LINES in the JS below to change the poem.
-═══════════════════════════════════════════════════ -->
+  </div><!-- /device-buttons -->
+
+</div><!-- /device -->
+
+
+<!-- ══════════════════════════════════
+     LETTER OVERLAY
+     Edit POEM_LINES in the JS to write your poem.
+══════════════════════════════════ -->
 <div class="letter-overlay" id="letterOverlay">
   <div class="letter-paper">
     <button class="letter-close" onclick="closeLetter()">✕</button>
-    <p class="letter-greeting">My dearest,</p>
+    <div class="postmark">WITH<br>LOVE<br>✦✦<br>2025</div>
+    <p class="letter-greeting" id="letterGreeting">My dearest,</p>
     <div class="letter-poem" id="poemText"></div>
     <p class="letter-signoff" id="letterSignoff">
       Always yours 💚<br>
-      <em style="font-size:0.75rem; opacity:0.7;">[your name]</em>
+      <em style="font-size:0.75rem;opacity:0.65;">[your name]</em>
     </p>
   </div>
 </div>
 
+
 <script>
-  // ── GENERATE STARS ──────────────────────────────────────────
-  const starsContainer = document.getElementById('stars');
-  for (let i = 0; i < 80; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    const size = Math.random() * 2 + 1;
-    star.style.cssText = `
-      width:${size}px; height:${size}px;
-      top:${Math.random()*100}%; left:${Math.random()*100}%;
-      --dur:${2+Math.random()*4}s;
-      --delay:${Math.random()*4}s;
-      --min-op:${0.05+Math.random()*0.1};
-      --max-op:${0.4+Math.random()*0.5};
-    `;
-    starsContainer.appendChild(star);
+// ═══════════════════════════════════════════════
+// STARS
+// ═══════════════════════════════════════════════
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 100; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const sz = Math.random() * 2.2 + 0.6;
+  s.style.cssText = `
+    width:${sz}px;height:${sz}px;
+    top:${Math.random()*100}%;left:${Math.random()*100}%;
+    --dur:${2+Math.random()*5}s;
+    --delay:${Math.random()*5}s;
+    --min-op:${0.04+Math.random()*0.08};
+    --max-op:${0.35+Math.random()*0.55};
+  `;
+  starsEl.appendChild(s);
+}
+
+// ═══════════════════════════════════════════════
+// ELEMENT REFS
+// ═══════════════════════════════════════════════
+const knob       = document.getElementById('knob');
+const cdDisc     = document.getElementById('cdDisc');
+const audioFwd   = document.getElementById('audioFwd');
+const audioRev   = document.getElementById('audioRev');
+const statusDot  = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const playBtn    = document.getElementById('playBtn');
+const iconPlay   = document.getElementById('iconPlay');
+const iconPause  = document.getElementById('iconPause');
+
+// ═══════════════════════════════════════════════
+// KNOB / LEVER STATE
+// ═══════════════════════════════════════════════
+let isDragging  = false;
+let knobAngle   = 0;
+let cdAngle     = 0;
+let lastAngle   = null;
+let stopTimer   = null;
+// "dial" mode tracks which direction the knob is turning
+// so the CD and audio respond correctly
+let dialPlaying = false;   // is dial-triggered audio playing?
+let dialDir     = null;    // 'fwd' or 'rev'
+
+// ═══════════════════════════════════════════════
+// PLAY BUTTON STATE (independent of dial)
+// ═══════════════════════════════════════════════
+let btnPlaying = false;   // is the play button active?
+
+// ═══════════════════════════════════════════════
+// HELPER: angle from pointer to knob center
+// ═══════════════════════════════════════════════
+function getAngle(clientX, clientY) {
+  const r  = knob.getBoundingClientRect();
+  const cx = r.left + r.width  / 2;
+  const cy = r.top  + r.height / 2;
+  return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
+}
+
+// ═══════════════════════════════════════════════
+// KNOB DRAG — START
+// ═══════════════════════════════════════════════
+function startDrag(x, y) {
+  // If play button is active, stop it — dial takes control
+  if (btnPlaying) stopBtnAudio();
+  isDragging = true;
+  lastAngle  = getAngle(x, y);
+  knob.classList.add('dragging');
+}
+
+// ═══════════════════════════════════════════════
+// KNOB DRAG — MOVE
+// clockwise  (delta > 0) → forward audio
+// counter-CW (delta < 0) → reverse audio
+// ═══════════════════════════════════════════════
+function onMove(x, y) {
+  if (!isDragging) return;
+
+  const cur   = getAngle(x, y);
+  let   delta = cur - lastAngle;
+  if (delta >  180) delta -= 360;
+  if (delta < -180) delta += 360;
+
+  knobAngle += delta;
+  cdAngle   += delta * 1.4;
+  lastAngle  = cur;
+
+  knob.style.transform   = `rotate(${knobAngle}deg)`;
+  cdDisc.style.transform = `rotate(${cdAngle}deg)`;
+
+  if (Math.abs(delta) > 0.4) {
+    const dir = delta > 0 ? 'fwd' : 'rev';
+    dialAudio(dir);
+    clearTimeout(stopTimer);
+    // Pause 160ms after movement stops
+    stopTimer = setTimeout(stopDialAudio, 160);
   }
+}
 
-  // ── ELEMENT REFERENCES ──────────────────────────────────────
-  const knob       = document.getElementById('knob');
-  const cdDisc     = document.getElementById('cdDisc');
-  const audio      = document.getElementById('audio');
-  const statusText = document.getElementById('statusText');
-  const audioBars  = document.getElementById('audioBars');
+// ═══════════════════════════════════════════════
+// KNOB DRAG — END
+// ═══════════════════════════════════════════════
+function stopDrag() {
+  if (!isDragging) return;
+  isDragging = false;
+  knob.classList.remove('dragging');
+  stopDialAudio();
+}
 
-  // ── STATE ───────────────────────────────────────────────────
-  let isDragging = false;
-  let knobAngle  = 0;
-  let cdAngle    = 0;
-  let lastAngle  = null;
-  let stopTimer  = null;
-  let isPlaying  = false;
-
-  // ── CALCULATE ANGLE FROM POINTER TO KNOB CENTER ─────────────
-  function getAngle(clientX, clientY) {
-    const rect = knob.getBoundingClientRect();
-    const cx = rect.left + rect.width  / 2;
-    const cy = rect.top  + rect.height / 2;
-    return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
-  }
-
-  // ── START DRAG ──────────────────────────────────────────────
-  function startDrag(x, y) {
-    isDragging = true;
-    lastAngle  = getAngle(x, y);
-    knob.classList.add('dragging');
-  }
-
-  // ── HANDLE MOVEMENT ─────────────────────────────────────────
-  function onMove(x, y) {
-    if (!isDragging) return;
-
-    const currentAngle = getAngle(x, y);
-    let delta = currentAngle - lastAngle;
-
-    // Prevent wrap-around jump at ±180°
-    if (delta >  180) delta -= 360;
-    if (delta < -180) delta += 360;
-
-    knobAngle += delta;
-    cdAngle   += delta * 1.5; // CD spins 1.5x faster than the knob
-    lastAngle  = currentAngle;
-
-    knob.style.transform   = `rotate(${knobAngle}deg)`;
-    cdDisc.style.transform = `rotate(${cdAngle}deg)`;
-
-    if (Math.abs(delta) > 0.5) {
-      playAudio();
-      clearTimeout(stopTimer);
-      stopTimer = setTimeout(pauseAudio, 150); // pause 150ms after movement stops
+// ═══════════════════════════════════════════════
+// DIAL AUDIO CONTROL
+// Plays fwd or rev audio while the knob is turning.
+// Pauses whichever isn't needed.
+// ═══════════════════════════════════════════════
+function dialAudio(dir) {
+  if (dir === 'fwd') {
+    if (audioFwd.paused) {
+      audioRev.pause();
+      audioFwd.play().catch(()=>{});
     }
+    dialDir = 'fwd';
+  } else {
+    if (audioRev.paused) {
+      audioFwd.pause();
+      audioRev.play().catch(()=>{});
+    }
+    dialDir = 'rev';
   }
+  dialPlaying = true;
+  setStatus(dir === 'fwd' ? 'playing' : 'reverse',
+            dir === 'fwd' ? 'playing ▶' : 'reversed ◀');
+}
 
-  // ── STOP DRAG ───────────────────────────────────────────────
-  function stopDrag() {
-    if (!isDragging) return;
-    isDragging = false;
-    knob.classList.remove('dragging');
-    pauseAudio();
+function stopDialAudio() {
+  if (!dialPlaying) return;
+  dialPlaying = false;
+  dialDir     = null;
+  audioFwd.pause();
+  audioRev.pause();
+  setStatus('', 'turn the dial');
+}
+
+// ═══════════════════════════════════════════════
+// PLAY BUTTON — toggle forward audio on/off
+// Acts like a normal play/pause button.
+// Stops if the dial takes over.
+// ═══════════════════════════════════════════════
+function togglePlay() {
+  if (btnPlaying) {
+    stopBtnAudio();
+  } else {
+    // Stop dial audio first
+    stopDialAudio();
+    btnPlaying = true;
+    audioFwd.play().catch(()=>{});
+    iconPlay.style.display  = 'none';
+    iconPause.style.display = '';
+    playBtn.classList.add('active');
+    setStatus('playing', 'playing ▶');
   }
+}
 
-  // ── PLAY AUDIO ──────────────────────────────────────────────
-  function playAudio() {
-    if (isPlaying) return;
-    isPlaying = true;
-    audio.play().catch(() => {});
-    statusText.textContent = 'Playing 💚';
-    statusText.classList.add('playing');
-    audioBars.classList.add('playing');
+function stopBtnAudio() {
+  btnPlaying = false;
+  audioFwd.pause();
+  iconPlay.style.display  = '';
+  iconPause.style.display = 'none';
+  playBtn.classList.remove('active');
+  setStatus('', 'turn the dial');
+}
+
+// When forward audio ends naturally, reset the play button
+audioFwd.addEventListener('ended', () => {
+  if (btnPlaying) stopBtnAudio();
+});
+
+// ═══════════════════════════════════════════════
+// STATUS BAR HELPER
+// ═══════════════════════════════════════════════
+function setStatus(state, text) {
+  statusDot.className  = 'status-dot'  + (state ? ' ' + state : '');
+  statusText.className = 'status-text' + (state ? ' ' + state : '');
+  statusText.textContent = text;
+}
+
+// ═══════════════════════════════════════════════
+// MOUSE EVENTS
+// ═══════════════════════════════════════════════
+knob.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
+window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+window.addEventListener('mouseup', stopDrag);
+
+// ═══════════════════════════════════════════════
+// TOUCH EVENTS
+// ═══════════════════════════════════════════════
+knob.addEventListener('touchstart', e => {
+  e.preventDefault();
+  startDrag(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: false });
+window.addEventListener('touchmove', e => {
+  onMove(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: true });
+window.addEventListener('touchend', stopDrag);
+
+
+// ═══════════════════════════════════════════════
+// POEM — edit these lines to write your poem!
+// Use "" for a blank line between stanzas.
+// ═══════════════════════════════════════════════
+const POEM_LINES = [
+  "The miles between us feel like oceans wide,",
+  "but every time I close my eyes at night,",
+  "I trace the way you laugh, the way you sigh,",
+  "and somehow every distance feels alright.",
+  "",
+  "You live inside the songs I play too loud,",
+  "inside the quiet corners of my chest,",
+  "you are the one thought breaking through the crowd —",
+  "the only place my restless heart finds rest.",
+  "",
+  "So here is everything I cannot say",
+  "across the call, across the glowing screen:",
+  "that you are every version of okay,",
+  "and you're the best thing that has ever been.",
+  "",
+  "Happy birthday, love. I hope you feel",
+  "how close I am, even when I'm far.",
+  "No distance makes this love feel less than real —",
+  "you are, to me, the brightest kind of star.",
+];
+
+let letterOpened = false;
+let typingTimer  = null;
+
+// ═══════════════════════════════════════════════
+// OPEN LETTER
+// ═══════════════════════════════════════════════
+function openLetter() {
+  const overlay = document.getElementById('letterOverlay');
+  overlay.classList.add('visible');
+  // Start typewriter after the paper scales in
+  if (!letterOpened) {
+    letterOpened = true;
+    setTimeout(startTypewriter, 600);
   }
+}
 
-  // ── PAUSE AUDIO ─────────────────────────────────────────────
-  function pauseAudio() {
-    if (!isPlaying) return;
-    isPlaying = false;
-    audio.pause();
-    statusText.textContent = 'Turn the knob to play';
-    statusText.classList.remove('playing');
-    audioBars.classList.remove('playing');
-  }
+// ═══════════════════════════════════════════════
+// CLOSE LETTER
+// ═══════════════════════════════════════════════
+function closeLetter() {
+  document.getElementById('letterOverlay').classList.remove('visible');
+}
 
-  // ── MOUSE EVENTS (desktop) ───────────────────────────────────
-  knob.addEventListener('mousedown', e => {
-    e.preventDefault();
-    startDrag(e.clientX, e.clientY);
-  });
-  window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
-  window.addEventListener('mouseup', stopDrag);
+// ═══════════════════════════════════════════════
+// TYPEWRITER
+// Types one character every 38ms.
+// Change 38 to go faster (lower) or slower (higher).
+// ═══════════════════════════════════════════════
+function startTypewriter() {
+  const el      = document.getElementById('poemText');
+  const signoff = document.getElementById('letterSignoff');
+  const full    = POEM_LINES.join('\n');
+  let   i       = 0;
+  el.textContent = '';
 
-  // ── TOUCH EVENTS (mobile) ────────────────────────────────────
-  knob.addEventListener('touchstart', e => {
-    e.preventDefault();
-    const t = e.touches[0];
-    startDrag(t.clientX, t.clientY);
-  }, { passive: false });
-
-  window.addEventListener('touchmove', e => {
-    const t = e.touches[0];
-    onMove(t.clientX, t.clientY);
-  }, { passive: true });
-
-  window.addEventListener('touchend', stopDrag);
-
-  // ══════════════════════════════════════════════════════
-  // ENVELOPE & TYPEWRITER
-  // ══════════════════════════════════════════════════════
-
-  // ── POEM LINES ─────────────────────────────────────────
-  // Edit these lines to write your own poem.
-  // Use "" for a blank line between stanzas.
-  const POEM_LINES = [
-    "The miles between us feel like oceans wide,",
-    "but every time I close my eyes at night,",
-    "I trace the way you laugh, the way you sigh,",
-    "and somehow every distance feels alright.",
-    "",
-    "You live inside the songs I play too loud,",
-    "inside the quiet corners of my chest,",
-    "you are the one thought breaking through the crowd —",
-    "the only place my restless heart finds rest.",
-    "",
-    "So here is everything I cannot say",
-    "across the call, across the glowing screen:",
-    "that you are every version of okay,",
-    "and you're the best thing that has ever been.",
-    "",
-    "Happy birthday, love. I hope you feel",
-    "how close I am, even when I'm far.",
-    "No distance makes this love feel less than real —",
-    "you are, to me, the brightest kind of star.",
-  ];
-
-  // ── STATE ──────────────────────────────────────────────
-  let envelopeOpened = false;  // has the envelope been clicked?
-  let typingTimer    = null;   // reference to the typewriter interval
-
-  // ── OPEN ENVELOPE ──────────────────────────────────────
-  // Called when the user clicks the envelope
-  function openEnvelope() {
-    if (envelopeOpened) return;    // do nothing if already opened
-    envelopeOpened = true;
-
-    const env = document.getElementById('envelope');
-    env.classList.add('opened');   // triggers CSS: flap flips back, letter rises
-
-    // Wait for the envelope animation to finish (≈1s), then show the letter
-    setTimeout(showLetter, 1000);
-  }
-
-  // ── SHOW LETTER ────────────────────────────────────────
-  // Fades in the overlay, then starts typewriter
-  function showLetter() {
-    const overlay = document.getElementById('letterOverlay');
-    overlay.classList.add('visible');  // CSS transition: opacity 0 → 1
-
-    // Start typing after the letter paper has scaled in (another 0.6s)
-    setTimeout(startTypewriter, 700);
-  }
-
-  // ── CLOSE LETTER ───────────────────────────────────────
-  // Called by the × button. Hides the overlay and stops typing.
-  function closeLetter() {
-    clearInterval(typingTimer);    // stop any in-progress typing
-    const overlay = document.getElementById('letterOverlay');
-    overlay.classList.remove('visible');
-  }
-
-  // ── TYPEWRITER EFFECT ──────────────────────────────────
-  // Joins all poem lines into one string (with newlines),
-  // then "types" one character at a time using setInterval.
-  function startTypewriter() {
-    const el = document.getElementById('poemText');
-    const signoff = document.getElementById('letterSignoff');
-
-    // Join lines with newline characters
-    // The \n inside a pre-wrap div becomes a visible line break
-    const fullText = POEM_LINES.join('\n');
-
-    let charIndex = 0;    // which character we're currently up to
-    el.textContent = '';  // clear any previous content
-
-    // setInterval calls the function every N milliseconds
-    // 38ms ≈ natural typewriter speed
-    typingTimer = setInterval(() => {
-      if (charIndex < fullText.length) {
-        el.textContent += fullText[charIndex]; // add one character
-        charIndex++;
-
-        // Auto-scroll the letter paper as text grows
-        el.parentElement.scrollTop = el.parentElement.scrollHeight;
-      } else {
-        // Typing is complete
-        clearInterval(typingTimer);
-        el.classList.add('done');      // removes the blinking cursor
-        // Fade in the sign-off after a short pause
-        setTimeout(() => {
-          signoff.style.opacity = '1';
-        }, 400);
-      }
-    }, 38); // ← change this number to type faster (lower) or slower (higher)
-  }
+  typingTimer = setInterval(() => {
+    if (i < full.length) {
+      el.textContent += full[i++];
+      // Scroll down as text grows
+      el.closest('.letter-paper').scrollTop =
+        el.closest('.letter-paper').scrollHeight;
+    } else {
+      clearInterval(typingTimer);
+      el.classList.add('done');
+      setTimeout(() => { signoff.style.opacity = '1'; }, 400);
+    }
+  }, 38);
+}
 </script>
 </body>
 </html>
