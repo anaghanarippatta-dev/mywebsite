@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Happy Birthday 💚</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Italiana&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Italiana&family=Special+Elite&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -316,39 +316,337 @@
     .cd-disc { width: 110px; height: 110px; }
     .knob-wrap { width: 80px; height: 80px; }
   }
-  .envelope {
-  margin-top: 2rem;
-  font-size: 2.5rem;
-  text-align: center;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.8s ease;
- }
 
- .envelope.show {
-  opacity: 1;
-  transform: translateY(0);
- }
+  /* ── ENVELOPE AREA ───────────────────────────────────────── */
+  /* Sits below the main card with breathing room */
+  .envelope-area {
+    position: relative;
+    z-index: 2;
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
 
- .poem {
-  margin-top: 2rem;
-  white-space: pre-wrap;
-  text-align: center;
-  font-size: 0.9rem;
- }
+  .envelope-hint {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(200, 255, 212, 0.25);
+    animation: hintPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 1; }
+  }
 
- #cursor {
-  animation: blink 1s infinite;
- }
+  /* The envelope wrapper — holds all envelope layers */
+  .envelope-wrap {
+    position: relative;
+    width: 220px;
+    height: 150px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .envelope-wrap:hover { transform: translateY(-4px) scale(1.02); }
+  .envelope-wrap.opened { cursor: default; transform: none; pointer-events: none; }
 
- @keyframes blink {
-  50% { opacity: 0; }
- }
+  /* ── ENVELOPE BODY (the main rectangle) ── */
+  .env-body {
+    position: absolute;
+    inset: 0;
+    /* Aged parchment colour */
+    background: #e8dcc8;
+    border-radius: 4px 4px 6px 6px;
+    /* Left and right diagonal fold lines drawn with a linear gradient trick */
+    background-image:
+      linear-gradient(135deg, #d4c4a0 0%, transparent 50%),
+      linear-gradient(225deg, #d4c4a0 0%, transparent 50%);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+    overflow: hidden;
+  }
 
- .hidden {
-  display: none;
- }
+  /* Paper grain texture on the envelope body */
+  .env-body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  /* Bottom triangle fold (V-shape at bottom of envelope) */
+  .env-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 75px;
+    /* clip-path creates a triangle pointing upward */
+    clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+    background: #ddd0b0;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* Left side triangle fold */
+  .env-left {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 110px;
+    clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+    background: #ddd0b0;
+    border-right: 1px solid rgba(0,0,0,0.06);
+  }
+
+  /* Right side triangle fold */
+  .env-right {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 110px;
+    clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
+    background: #ddd0b0;
+    border-left: 1px solid rgba(0,0,0,0.06);
+  }
+
+  /* ── ENVELOPE FLAP (top triangle that opens) ── */
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 80px;
+    /* Triangle pointing downward — this is the flap */
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+    background: #e2d4b4;
+    transform-origin: top center;   /* rotates from the top edge */
+    transform: rotateX(0deg);
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    z-index: 3;
+    /* perspective makes the 3D flip look realistic */
+    backface-visibility: visible;
+  }
+
+  /* When opened: flap folds backward (negative X rotation = fold back) */
+  .envelope-wrap.opened .env-flap {
+    transform: rotateX(-170deg);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── WAX SEAL ── */
+  .wax-seal {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    background: radial-gradient(circle at 40% 35%, #a83232, #6b1515);
+    border-radius: 50%;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,100,100,0.3);
+    transition: opacity 0.3s, transform 0.3s;
+    /* Small irregular edge to look like real wax */
+    clip-path: polygon(50% 0%,61% 15%,79% 9%,79% 27%,96% 35%,85% 50%,96% 65%,79% 73%,79% 91%,61% 85%,50% 100%,39% 85%,21% 91%,21% 73%,4% 65%,15% 50%,4% 35%,21% 27%,21% 9%,39% 15%);
+  }
+  /* Seal cracks and fades when opened */
+  .envelope-wrap.opened .wax-seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6) rotate(20deg);
+    transition: opacity 0.3s 0.2s, transform 0.3s 0.2s;
+  }
+
+  /* ── LETTER that peeks out of the envelope ── */
+  .env-letter-peek {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0px);
+    width: 180px;
+    height: 60px;
+    background: #f5edd8;
+    border-radius: 2px;
+    z-index: 1;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
+  }
+  /* Letter rises up out of envelope when opened */
+  .envelope-wrap.opened .env-letter-peek {
+    transform: translateX(-50%) translateY(-30px);
+  }
+
+  /* ── FULL LETTER OVERLAY ── 
+    This is the large letter that appears centred on screen.
+    It starts invisible and transitions to visible.
+  */
+  .letter-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    /* Semi-transparent dark backdrop */
+    background: rgba(5, 5, 15, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    /* Hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease 0.8s; /* delays until envelope animation finishes */
+  }
+  /* When active, fade in and allow clicks */
+  .letter-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* The actual letter paper */
+  .letter-paper {
+    position: relative;
+    background: #f5edd8;
+    /* Parchment-style aged paper */
+    background-image:
+      repeating-linear-gradient(
+        transparent,
+        transparent 27px,
+        rgba(180, 160, 100, 0.25) 27px,
+        rgba(180, 160, 100, 0.25) 28px
+      );
+    border-radius: 3px;
+    max-width: 500px;
+    width: 100%;
+    padding: 3rem 2.5rem 2.5rem;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.6),
+      0 0 0 1px rgba(180,160,100,0.3),
+      inset 0 0 80px rgba(180,140,60,0.08);
+    /* Starts scaled down — animates to full size */
+    transform: scale(0.85) translateY(30px);
+    transition: transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) 0.9s;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .letter-overlay.visible .letter-paper {
+    transform: scale(1) translateY(0);
+  }
+
+  /* Aged paper edges */
+  .letter-paper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  /* Red left margin line (classic letter paper look) */
+  .letter-paper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 2.2rem;
+    width: 1px;
+    background: rgba(180, 80, 80, 0.25);
+  }
+
+  /* Letter greeting "Dear ..." */
+  .letter-greeting {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #4a3520;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.4s ease 1.2s;
+  }
+  .letter-overlay.visible .letter-greeting { opacity: 1; }
+
+  /* The poem text area */
+  .letter-poem {
+    font-family: 'Special Elite', cursive; /* typewriter font */
+    font-size: 0.88rem;
+    line-height: 2;
+    color: #3a2a14;
+    white-space: pre-wrap; /* preserves line breaks */
+    min-height: 200px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Blinking cursor that appears at the end of typed text */
+  .letter-poem::after {
+    content: '|';
+    animation: blink 0.7s step-end infinite;
+    color: #4a3520;
+    font-weight: bold;
+  }
+  /* Hide cursor when typing is done */
+  .letter-poem.done::after { display: none; }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* Letter sign-off */
+  .letter-signoff {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #4a3520;
+    margin-top: 1.5rem;
+    text-align: right;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  /* Close button (×) in the top-right corner of the letter */
+  .letter-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 28px;
+    height: 28px;
+    background: rgba(74, 53, 32, 0.1);
+    border: 1px solid rgba(74, 53, 32, 0.2);
+    border-radius: 50%;
+    color: #4a3520;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    font-family: sans-serif;
+    z-index: 2;
+  }
+  .letter-close:hover { background: rgba(74, 53, 32, 0.2); }
+
+  /* Decorative postmark stamp in the corner of the envelope */
+  .postmark {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    border: 2px solid rgba(100, 80, 50, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Special Elite', cursive;
+    font-size: 5px;
+    color: rgba(100, 80, 50, 0.5);
+    text-align: center;
+    line-height: 1.3;
+    z-index: 2;
+    letter-spacing: 0.05em;
+  }
 </style>
 </head>
 <body>
@@ -425,17 +723,42 @@
     </svg>
     Open Playlist
   </a>
-    <!-- Envelope -->
- <div id="envelope" class="envelope hidden">
-  ✉️
-  <p style="font-size:12px;">one more thing…</p>
- </div>
 
- <!-- Poem -->
- <div id="poem" class="poem hidden">
-  <p id="poemText"></p><span id="cursor">|</span>
- </div>
+</div>
 
+<!-- ══════════════════════════════════════════════════
+     ENVELOPE SECTION
+═══════════════════════════════════════════════════ -->
+<div class="envelope-area">
+  <p class="envelope-hint">✦ a letter for you ✦</p>
+
+  <div class="envelope-wrap" id="envelope" onclick="openEnvelope()">
+    <div class="env-body"></div>
+    <div class="env-left"></div>
+    <div class="env-right"></div>
+    <div class="env-bottom"></div>
+    <div class="env-letter-peek"></div>
+    <div class="env-flap"></div>
+    <div class="wax-seal">💚</div>
+    <div class="postmark">WITH<br>LOVE<br>✦✦✦<br>2025</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     FULL LETTER OVERLAY
+     Edit POEM_LINES in the JS below to change the poem.
+═══════════════════════════════════════════════════ -->
+<div class="letter-overlay" id="letterOverlay">
+  <div class="letter-paper">
+    <button class="letter-close" onclick="closeLetter()">✕</button>
+    <p class="letter-greeting">My dearest,</p>
+    <div class="letter-poem" id="poemText"></div>
+    <p class="letter-signoff" id="letterSignoff">
+      Always yours 💚<br>
+      <em style="font-size:0.75rem; opacity:0.7;">[your name]</em>
+    </p>
+  </div>
+</div>
 
 <script>
   // ── GENERATE STARS ──────────────────────────────────────────
@@ -461,9 +784,7 @@
   const audio      = document.getElementById('audio');
   const statusText = document.getElementById('statusText');
   const audioBars  = document.getElementById('audioBars');
-  const envelope = document.getElementById("envelope");
-  const poemBox = document.getElementById("poem");
-  const poemTextEl = document.getElementById("poemText");
+
   // ── STATE ───────────────────────────────────────────────────
   let isDragging = false;
   let knobAngle  = 0;
@@ -521,20 +842,14 @@
   }
 
   // ── PLAY AUDIO ──────────────────────────────────────────────
-  function playAudio(){
-  if(!isPlaying){
-    isPlaying=true;
-    audio.play().catch(()=>{});
-
-    // SHOW ENVELOPE ON FIRST PLAY ONLY
-    if(!envelope.classList.contains("show")){
-      setTimeout(()=>{
-        envelope.classList.remove("hidden");
-        envelope.classList.add("show");
-      },1000);
-    }
+  function playAudio() {
+    if (isPlaying) return;
+    isPlaying = true;
+    audio.play().catch(() => {});
+    statusText.textContent = 'Playing 💚';
+    statusText.classList.add('playing');
+    audioBars.classList.add('playing');
   }
- }
 
   // ── PAUSE AUDIO ─────────────────────────────────────────────
   function pauseAudio() {
@@ -567,41 +882,105 @@
   }, { passive: true });
 
   window.addEventListener('touchend', stopDrag);
-  
-  // POEMS
-  const poemText = `i didn’t expect this...
-  not like this, not with you
 
-  but somewhere between
-  late nights and small conversations
+  // ══════════════════════════════════════════════════════
+  // ENVELOPE & TYPEWRITER
+  // ══════════════════════════════════════════════════════
 
-  you became important
+  // ── POEM LINES ─────────────────────────────────────────
+  // Edit these lines to write your own poem.
+  // Use "" for a blank line between stanzas.
+  const POEM_LINES = [
+    "The miles between us feel like oceans wide,",
+    "but every time I close my eyes at night,",
+    "I trace the way you laugh, the way you sigh,",
+    "and somehow every distance feels alright.",
+    "",
+    "You live inside the songs I play too loud,",
+    "inside the quiet corners of my chest,",
+    "you are the one thought breaking through the crowd —",
+    "the only place my restless heart finds rest.",
+    "",
+    "So here is everything I cannot say",
+    "across the call, across the glowing screen:",
+    "that you are every version of okay,",
+    "and you're the best thing that has ever been.",
+    "",
+    "Happy birthday, love. I hope you feel",
+    "how close I am, even when I'm far.",
+    "No distance makes this love feel less than real —",
+    "you are, to me, the brightest kind of star.",
+  ];
 
-  and i’m really glad it’s you.`;
+  // ── STATE ──────────────────────────────────────────────
+  let envelopeOpened = false;  // has the envelope been clicked?
+  let typingTimer    = null;   // reference to the typewriter interval
 
- let i = 0;
+  // ── OPEN ENVELOPE ──────────────────────────────────────
+  // Called when the user clicks the envelope
+  function openEnvelope() {
+    if (envelopeOpened) return;    // do nothing if already opened
+    envelopeOpened = true;
 
- function typeWriter(){
-  if(i < poemText.length){
-    poemTextEl.innerHTML += poemText.charAt(i);
-    i++;
+    const env = document.getElementById('envelope');
+    env.classList.add('opened');   // triggers CSS: flap flips back, letter rises
 
-    let speed = 40;
-    if(poemText.charAt(i) === ".") speed = 300;
-    if(poemText.charAt(i) === "\n") speed = 200;
-
-    setTimeout(typeWriter, speed);
-  } else {
-    setTimeout(()=>{
-      poemTextEl.innerHTML += "\n\nhappy birthday.";
-    },800);
+    // Wait for the envelope animation to finish (≈1s), then show the letter
+    setTimeout(showLetter, 1000);
   }
- }
- envelope.addEventListener("click", ()=>{
-  envelope.style.display = "none";
-  poemBox.classList.remove("hidden");
-  typeWriter();
- });
+
+  // ── SHOW LETTER ────────────────────────────────────────
+  // Fades in the overlay, then starts typewriter
+  function showLetter() {
+    const overlay = document.getElementById('letterOverlay');
+    overlay.classList.add('visible');  // CSS transition: opacity 0 → 1
+
+    // Start typing after the letter paper has scaled in (another 0.6s)
+    setTimeout(startTypewriter, 700);
+  }
+
+  // ── CLOSE LETTER ───────────────────────────────────────
+  // Called by the × button. Hides the overlay and stops typing.
+  function closeLetter() {
+    clearInterval(typingTimer);    // stop any in-progress typing
+    const overlay = document.getElementById('letterOverlay');
+    overlay.classList.remove('visible');
+  }
+
+  // ── TYPEWRITER EFFECT ──────────────────────────────────
+  // Joins all poem lines into one string (with newlines),
+  // then "types" one character at a time using setInterval.
+  function startTypewriter() {
+    const el = document.getElementById('poemText');
+    const signoff = document.getElementById('letterSignoff');
+
+    // Join lines with newline characters
+    // The \n inside a pre-wrap div becomes a visible line break
+    const fullText = POEM_LINES.join('\n');
+
+    let charIndex = 0;    // which character we're currently up to
+    el.textContent = '';  // clear any previous content
+
+    // setInterval calls the function every N milliseconds
+    // 38ms ≈ natural typewriter speed
+    typingTimer = setInterval(() => {
+      if (charIndex < fullText.length) {
+        el.textContent += fullText[charIndex]; // add one character
+        charIndex++;
+
+        // Auto-scroll the letter paper as text grows
+        el.parentElement.scrollTop = el.parentElement.scrollHeight;
+      } else {
+        // Typing is complete
+        clearInterval(typingTimer);
+        el.classList.add('done');      // removes the blinking cursor
+        // Fade in the sign-off after a short pause
+        setTimeout(() => {
+          signoff.style.opacity = '1';
+        }, 400);
+      }
+    }, 38); // ← change this number to type faster (lower) or slower (higher)
+  }
 </script>
 </body>
 </html>
